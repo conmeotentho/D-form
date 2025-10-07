@@ -16,16 +16,17 @@ export default defineConfig({
   },
   build: {
     lib: {
-      // ⚠️ Dùng file UMD entry riêng, KHÔNG phải main.js
       entry: path.resolve(__dirname, "src/umd-entry.js"),
-      name: "MyVueLib",
-      fileName: (format) => `my-vue-lib.${format}.js`,
+      name: "AppTree",
+      fileName: (format) => `app-tree.${format}.js`,
       formats: ["umd"],
     },
     rollupOptions: {
-      external: ["vue"],
+      // ⚠️ Không external Vue -> bundle luôn Vue runtime
       output: {
-        globals: { vue: "Vue" },
+        globals: {
+          vue: "Vue",
+        },
       },
     },
   },
