@@ -4,6 +4,13 @@ import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import i18n from "./i18n";
 
+import "@/assets/base.css";
+import "@/assets/custom.css";
+import "@/assets/tailwind.css";
+import '@primeuix/themes/aura'; // theme chính
+import 'primeicons/primeicons.css'; // icons
+
+
 import TreeComponent from "@/components/TreeComponent.vue";
 import SearchMultiple from "@/components/common/SearchMultiple.vue";
 import DropComponent from "@/components/DropComponent.vue";
