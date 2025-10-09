@@ -3,7 +3,7 @@
     <div class="flex h-[100vh]">
       <SearchMultiple
         :width="450"
-        :feature="'BundleProductOffering'"
+        :feature="'ProductSpecification'"
         :hasPermissionCreate="true"
         :listObjects="listObjects"
         @changeTab="changeTab"
@@ -73,7 +73,7 @@ const onDrop = (evt: DragEvent) => {
   if (!itemDrop.id) {
     return;
   }
-  getSimplePODetail(itemDrop.id);
+  getProductSpecDetail(itemDrop.id);
   if (props.typeTree === TypeEnum.SIMPLE_PO || props.typeTree === TypeEnum.BUNDLED_PO) {
     getSimplePODetail(itemDrop.id);
   }
