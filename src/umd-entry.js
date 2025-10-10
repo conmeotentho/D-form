@@ -7,8 +7,8 @@ import i18n from "./i18n";
 import "@/assets/base.css";
 import "@/assets/custom.css";
 import "@/assets/tailwind.css";
-import '@primeuix/themes/aura'; // theme chính
-import 'primeicons/primeicons.css'; // icons
+import '@primeuix/themes/aura';
+import 'primeicons/primeicons.css';
 
 
 import TreeComponent from "@/components/TreeComponent.vue";
