@@ -2,27 +2,20 @@ import { createApp, h } from 'vue';
 import singleSpaVue from "single-spa-vue";
 
 import App from "./App.vue";
-// import router from "./router";
-// import loading from "./plugins/loading";
 
-import "@/assets/base.css";
 import "@/assets/custom.css";
 import "@/assets/tailwind.css";
+import '@/assets/styles.scss';
+import 'primeicons/primeicons.css';
 // import 'font-awesome/css/font-awesome.min.css';
 // import "@app/app-formui/dist/style.css";
 // import "app-camunda-oda/dist/my-bpmn-widget.iife";
 // import "app-camunda-oda/dist/style.css";
 import Aura from '@primeuix/themes/aura';
 import PrimeVue from "primevue/config";
-// import ConfirmationService from "primevue/confirmationservice";
-// import ToastService from "primevue/toastservice";
-// import type { SingleSpaProps } from 'single-spa-vue';
-// import '@/assets/styles.scss';
-// import "@/assets/custom.css";
 // import MyLib from '@app/app-formui'
 // import "@app/app-formui/dist/style.css";
 import i18n from './i18n/index.js';
-// import HelloWorld from './components/HelloWorld.vue';
 import TreeComponent from '@/components/TreeComponent.vue'
 import SearchMultiple from '@/components/common/SearchMultiple.vue';
 import DropComponent from '@/components/DropComponent.vue';

@@ -12,6 +12,10 @@
     color: red;
 }
 
+.layout-topbar {
+    background-color: #222d32 !important;
+}
+
 .add-modal .p-dialog-header {
     background: #ff617d;
     color: #fff;
@@ -20,119 +24,4 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     margin-bottom: 15px;
-}
-
-.add-modal .p-button-text.p-button-secondary {
-    color: #ffffff;
-}
-
-.add-modal {
-    max-height: 90vh;
-}
-
-.feature-spec-modal {
-    position: absolute;
-    top: 12%!important;
-}
-
-.proposal-spec-modal {
-    position: absolute;
-    top: 12%!important;
-}
-
-.app-page {
-    position: relative!important;
-}
-
-.confirm-remove-dialog .p-dialog-header {
-    padding: 0.6rem 1.25rem;
-    background: #ff617d;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    margin-bottom: 22px;
-    color: #fff;
-}
-
-.matrix-cell .p-dialog-content {
-    padding: 2rem 1rem 1.25rem 2rem !important;
-}
-
-.matrix-cell .p-dialog-header {
-    margin-bottom: 0!important;
-}
-
-.p-toast-message {
-    margin: 0!important;
-}
-
-.p-select-option {
-    min-height: 35px!important;
-}
-
-.app-dark {
-    .p-datatable-tbody  {
-        .row-editing {
-            background-color: #5f6265 !important;
-        }
-    }
-
-    .tree-node {
-        background-color: #5f6265 !important;
-    }
-
-    .icon-org {
-        background-color: #5f6265 !important;
-        svg path {
-            fill: var(--p-text-color) !important;
-        }
-    }
-
-    .row-item, .card-item {
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 1) !important;
-    }
-
-    .toggle-content {
-        background-color: #5f6265 !important;
-        span {
-            color: var(--p-text-color) !important;
-            svg {
-                fill: var(--p-text-color) !important;
-            }
-        }
-    }
-
-    .card-footer svg {
-        fill: var(--p-text-color) !important;
-    }
-
-    .p-panel-header {
-        background-color: #5f6265 !important;
-        span, button {
-            color: #fff !important;
-        }
-    }
-
-    .char-selection, .search-multi, .p-row-odd > .matrix-col, .p-row-even > .matrix-col {
-        background-color: #000 !important;
-    }
-
-    .p-datatable-row-selected > .matrix-col {
-        background-color: #5f6265 !important;
-    }
-
-    .p-select-label, .p-select-option {
-        color: var(--p-text-color) !important;
-    }
-    
-    .search-conditions {
-        box-shadow: 0 2px 5px rgb(155, 152, 152) !important;
-    }
-
-    .p-accordionheader {
-        background-color: #5f6265 !important;
-    }
-
-    .logout {
-        color: white !important;
-    }
 }

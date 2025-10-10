@@ -4,7 +4,6 @@ import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import i18n from "./i18n";
 
-import "@/assets/base.css";
 import "@/assets/custom.css";
 import "@/assets/tailwind.css";
 import '@primeuix/themes/aura';

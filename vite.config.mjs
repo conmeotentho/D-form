@@ -27,15 +27,8 @@ export default defineConfig({
         globals: {
           vue: "Vue",
         },
-        assetFileNames: (assetInfo) => {
-          if (/\.css$/i.test(assetInfo.name)) return 'assets/[name].[ext]';
-          if (/\.(woff2?|ttf|eot|svg)$/i.test(assetInfo.name))
-            return 'assets/fonts/[name].[ext]';
-          return 'assets/[name].[ext]';
-        },
       },
     },
-    assetsInlineLimit: 0
   },
   resolve: {
     alias: {
