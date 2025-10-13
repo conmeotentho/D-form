@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import SearchMultiple from '@/components/common/SearchMultiple.vue';
-import DropComponent from './components/DropComponent.vue';
+import DropComponent from '@/components/DropComponent.vue';
 import { TypeEnum, KeyEnum, StatusCodeEnum, CharValueSpecTypeEnum, RelationshipTypeEnum, CtlTypeEnum, ValueTypeEnum } from '@/components/config/enum';
 import { store } from '@/store/store';
 import { PRICE_UNITS, KEYS_CHANGED } from '@/components/config/constant';
