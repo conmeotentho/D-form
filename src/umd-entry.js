@@ -13,7 +13,7 @@ import 'primeicons/primeicons.css';
 import TreeComponent from "@/components/TreeComponent.vue";
 import SearchMultiple from "@/components/common/SearchMultiple.vue";
 import DropComponent from "@/components/DropComponent.vue";
-import TreePo from "@/views/tree-po/index.vue";
+import TreePo from "@/components/TreePoComponent.vue";
 
 function createComponentInstance(Component) {
   return class {

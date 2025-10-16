@@ -34,6 +34,7 @@ declare module 'vue' {
     SearchMultiple: typeof import('./src/components/common/SearchMultiple.vue')['default']
     ToggleSwitch: typeof import('primevue/toggleswitch')['default']
     TreeComponent: typeof import('./src/components/TreeComponent.vue')['default']
+    TreePoComponent: typeof import('./src/components/TreePoComponent.vue')['default']
     VDatePicker: typeof import('./src/components/common/VDatePicker.vue')['default']
     VDateRangePicker: typeof import('./src/components/common/VDateRangePicker.vue')['default']
     VInput: typeof import('./src/components/common/VInput.vue')['default']
