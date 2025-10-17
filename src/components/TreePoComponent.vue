@@ -56,9 +56,9 @@ import { setCustomTokenFromStore, clearTokenFromStore } from '@/store/store';
 
 const props = defineProps<{
   typeTree: string;
-  dataSearch: {
-    [key: string]: any;
-  };
+  dataSearch: [];
+  totalCount: any;
+  resultCount: any;
   currentDetailItem?: {},
   token: string;
 
@@ -74,8 +74,11 @@ watch(() => props.currentDetailItem, (newValue) => {
   console.log("mappingDataDetail", newValue);
   mappingDataDetail(newValue)
 })
-watch(() => props.dataSearch, ({data, totalCount, resultCount}) => {
-  mappingDataInit({data, totalCount, resultCount})
+watch(() => props.dataSearch, (newVal) => {
+  if (newVal) {
+    console.log("run dataSearch");
+    mappingDataInit(newVal)
+  }
 })
 watch(() => props.token, (newValue) => {
   initToken(newValue)
@@ -110,7 +113,7 @@ const mappingDataDetail = async (dataDetail: any) => {
   }
   dataSelected.value = await MappingFunctionDetail[props.typeTree](dataDetail)
 }
-const mappingDataInit = ({data, totalCount = 0, resultCount = 0}) => {
+const mappingDataInit = (data: any) => {
   console.log('data');
   listObjects.value = [];
   switch (props.typeTree) {
@@ -123,8 +126,8 @@ const mappingDataInit = ({data, totalCount = 0, resultCount = 0}) => {
             typeObject: TypeEnum.SIMPLE_PO
           };
         }),
-        totalRecords: +totalCount,
-        resultCount: +resultCount
+        totalRecords: +props.totalCount,
+        resultCount: +props.resultCount
       });
       break;
 
@@ -134,24 +137,24 @@ const mappingDataInit = ({data, totalCount = 0, resultCount = 0}) => {
         value: data.map((item: any) => {
           return {...item, type: item["@type"] === TypeEnum.PO_PRICE ? "pop" : "matrix"};
         }),
-        totalRecords: +totalCount,
-        resultCount: +resultCount
+        totalRecords: +props.totalCount,
+        resultCount: +props.resultCount
       });
       break;
     case TypeEnum.CATE:
       listObjects.value.push({
         key: KeyEnum.CATE_KEY,
         value: data,
-        totalRecords: +totalCount,
-        resultCount: +resultCount
+        totalRecords: +props.totalCount,
+        resultCount: +props.resultCount
       });
       break;
     case TypeEnum.PRODUCT_SPEC:
       listObjects.value.push({
         key: KeyEnum.PRODUCT_SPEC_KEY,
         value: data,
-        totalRecords: +totalCount,
-        resultCount: +resultCount
+        totalRecords: +props.totalCount,
+        resultCount: +props.resultCount
       });
       break;
     default:
