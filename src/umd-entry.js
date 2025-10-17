@@ -1,8 +1,12 @@
 // src/umd-entry.js
-import { createApp } from "vue";
+import { createApp, h, reactive, ref } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import i18n from "./i18n";
+import ConfirmationService from "primevue/confirmationservice";
+import ToastService from 'primevue/toastservice'
+
+
 
 import "@/assets/custom.css";
 import "@/assets/tailwind.css";
@@ -15,26 +19,71 @@ import SearchMultiple from "@/components/common/SearchMultiple.vue";
 import DropComponent from "@/components/DropComponent.vue";
 import TreePo from "@/components/TreePoComponent.vue";
 
-function createComponentInstance(Component) {
-  return class {
-    constructor(selector, props = {}) {
-      const el = typeof selector === "string" ? document.querySelector(selector) : selector;
-      if (!el) throw new Error(`Không tìm thấy element: ${selector}`);
-      this.app = createApp(Component, props);
-      this.app.use(PrimeVue, {
-        theme: {
-          preset: Aura,
-          options: { prefix: "p", darkModeSelector: ".app-dark" },
-        },
-      });
-      this.app.use(i18n);
-      this.vm = this.app.mount(el);
+function toVueListenerKey(name) {
+    if (name.includes(':')) {
+        const [head, ...rest] = name.split(':')
+        return 'on' + head[0].toUpperCase() + head.slice(1) + ':' + rest.join(':')
     }
-    unmount() {
-      this.app.unmount();
-    }
-  };
+    return 'on' + name[0].toUpperCase() + name.slice(1)
 }
+
+function createComponentInstance(Component) {
+    return class {
+        constructor(selector, options = {}) {
+            const el = typeof selector === 'string' ? document.querySelector(selector) : selector
+            if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`)
+
+            // reactive props, so setProps() works
+            this._props = reactive({...(options.props ?? options)})
+
+            const on = options.on ?? {}
+            const listeners = Object.fromEntries(
+                Object.entries(on).map(([k, fn]) => [toVueListenerKey(k), fn])
+            )
+
+            const compRef = ref(null) // ← will hold App.vue’s exposed API
+
+            const Root = {
+                render: () => h(Component, {...this._props, ...listeners, ref: compRef}),
+            }
+            this._compRef = compRef
+            this.app = createApp(Root)
+            this.app.use(PrimeVue, {theme: {preset: Aura, options: {prefix: 'p', darkModeSelector: '.app-dark'}}})
+            this.app.use(ConfirmationService)
+            this.app.use(i18n)
+            this.app.use(ToastService);
+            this.vm = this.app.mount(el)
+        }
+
+
+        call(method, ...args) {
+            const exp = this._compRef.value
+            if (!exp || typeof exp[method] !== 'function') {
+                throw new Error(`Exposed method "${method}" not found on App.vue`)
+            }
+            console.log("exp[method]", exp)
+            return exp[method](...args)
+        }
+
+        /** Optional shortcut to the exposed object */
+        get exposed() {
+            return this._compRef.value
+        }
+
+        setProps(next) {
+            Object.assign(this._props, next)
+        }
+
+        on(eventName, handler) {
+            this._props[toVueListenerKey(eventName)] = handler
+        }
+
+        unmount() {
+            this.app.unmount()
+        }
+    }
+}
+
 
 window.TreeComponent = createComponentInstance(TreeComponent);
 window.SearchMultiple = createComponentInstance(SearchMultiple);

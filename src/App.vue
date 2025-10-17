@@ -18,9 +18,10 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import SearchMultiple from '@/components/common/SearchMultiple.vue';
-import DropComponent from './components/DropComponent.vue';
+import DropComponent from '@/components/DropComponent.vue';
+import TreeComponent from './components/TreeComponent.vue';
 import { TypeEnum, KeyEnum, StatusCodeEnum, CharValueSpecTypeEnum, RelationshipTypeEnum, CtlTypeEnum, ValueTypeEnum } from '@/components/config/enum';
 import { store } from '@/store/store';
 import { PRICE_UNITS, KEYS_CHANGED } from '@/components/config/constant';
@@ -51,14 +52,115 @@ import {
 } from '@/layout/composables/common';
 import { v4 as uuidv4 } from 'uuid';
 import cloneDeep from "lodash/cloneDeep";
+import { setCustomTokenFromStore, clearTokenFromStore } from '@/store/store';
 
 const props = defineProps<{
   typeTree: string;
+  dataSearch: {
+    [key: string]: any;
+  };
+  currentDetailItem?: {},
+  token: string;
+
 }>();
+
+const emit = defineEmits(['createEvent', 'searchEvent', 'getDetailEvent', 'deleteRecord', 'saveTreeData', 'cancelTreeData', 'extendCharacteristicData', 'createChildrenEvent'])
 
 const isSearchTab = ref<boolean>(true);
 const listObjects = ref<PanelObject[]>([]);
 const dataSelected = ref<any>(null);
+
+watch(() => props.currentDetailItem, (newValue) => {
+  console.log("mappingDataDetail", newValue);
+  mappingDataDetail(newValue)
+})
+watch(() => props.dataSearch, ({data, totalCount, resultCount}) => {
+  mappingDataInit({data, totalCount, resultCount})
+})
+watch(() => props.token, (newValue) => {
+  initToken(newValue)
+});
+
+onMounted(async () => {
+  mappingDataInit(props.dataSearch as any)
+  console.log("props.currentDetailItem", props.currentDetailItem)
+  dataSelected.value = await mappingDataDetail(props.currentDetailItem);
+  initToken(props?.token);
+})
+const initToken = (token?: string) => {
+  console.log('tokenChange:', token);
+  props?.token?.length ? setCustomTokenFromStore(token ?? "") : clearTokenFromStore();
+}
+const mappingDataDetail = async (dataDetail: any) => {
+  console.log('test', dataDetail, props.typeTree)
+  const MappingFunctionDetail: {
+    [K in TypeEnum]: any
+  } = {
+    [TypeEnum.SIMPLE_PO]: convertSPOResponseData,
+    [TypeEnum.BUNDLE_PO]: convertBPOResponseData,
+    [TypeEnum.PO_PRICE]: convertPOPResponseData,
+    [TypeEnum.CATE]: convertCatResponseData,
+    [TypeEnum.PRODUCT_SPEC]: convertPSResponseData,
+    [TypeEnum.RESOURCE_SPEC]: convertRSResponseData
+  }
+  if (!dataDetail) {
+    dataSelected.value = null;
+    console.log('nullable value work !!!!')
+    return;
+  }
+  dataSelected.value = await MappingFunctionDetail[props.typeTree](dataDetail)
+}
+const mappingDataInit = ({data, totalCount = 0, resultCount = 0}) => {
+  console.log('data');
+  listObjects.value = [];
+  switch (props.typeTree) {
+    case TypeEnum.SIMPLE_PO:
+      listObjects.value.push({
+        key: KeyEnum.SIMPLE_PO_KEY,
+        value: data.map((item: any) => {
+          return {
+            ...item,
+            typeObject: TypeEnum.SIMPLE_PO
+          };
+        }),
+        totalRecords: +totalCount,
+        resultCount: +resultCount
+      });
+      break;
+
+    case TypeEnum.PO_PRICE:
+      listObjects.value.push({
+        key: KeyEnum.PO_PRICE_KEY,
+        value: data.map((item: any) => {
+          return {...item, type: item["@type"] === TypeEnum.PO_PRICE ? "pop" : "matrix"};
+        }),
+        totalRecords: +totalCount,
+        resultCount: +resultCount
+      });
+      break;
+    case TypeEnum.CATE:
+      listObjects.value.push({
+        key: KeyEnum.CATE_KEY,
+        value: data,
+        totalRecords: +totalCount,
+        resultCount: +resultCount
+      });
+      break;
+    case TypeEnum.PRODUCT_SPEC:
+      listObjects.value.push({
+        key: KeyEnum.PRODUCT_SPEC_KEY,
+        value: data,
+        totalRecords: +totalCount,
+        resultCount: +resultCount
+      });
+      break;
+    default:
+      break;
+  }
+
+}
+
+
 
 const changeTab = (isSearch: boolean) => {
   isSearchTab.value = isSearch;

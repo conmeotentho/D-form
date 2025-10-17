@@ -19,7 +19,6 @@ import i18n from './i18n/index.js';
 import TreeComponent from '@/components/TreeComponent.vue'
 import SearchMultiple from '@/components/common/SearchMultiple.vue';
 import DropComponent from '@/components/DropComponent.vue';
-import TreePo from "@/views/tree-po/index.vue";
 
 // interface CustomProps extends SingleSpaProps {
 //   name: string;
