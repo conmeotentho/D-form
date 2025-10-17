@@ -639,13 +639,15 @@ const searchByConditions = async (
       await findAllCategory(offset, limit, query);
       break;
     case KeyEnum.PRODUCT_SPEC_KEY:
-      await findAllProdSpec(offset, limit, query);
+      // await findAllProdSpec(offset, limit, query);
+      emit('searchEvent', {offset, limit, selectedObjects, query});
       break;
     case KeyEnum.RESOURCE_SPEC_KEY:
-      await findAllResourceSpec(offset, limit, query);
+      // await findAllResourceSpec(offset, limit, query);
+      emit('searchEvent', {offset, limit, selectedObjects, query});
       break;
     case KeyEnum.CFS_SPEC_KEY:
-      if (props.typeTree === TypeEnum.PRODUCT_SPEC) await findAllCFS(offset, limit, query);
+      if (props.typeTree === TypeEnum.PRODUCT_SPEC) emit('searchEvent', {offset, limit, selectedObjects, query});
       else await findAllServiceSpec(offset, limit, TypeEnum.CFS_SPEC, query)
       break;
     case KeyEnum.RFS_SPEC_KEY:
