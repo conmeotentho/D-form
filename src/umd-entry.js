@@ -71,6 +71,7 @@ function createComponentInstance(Component) {
         }
 
         setProps(next) {
+            console.log("run set props");
             Object.assign(this._props, next)
         }
 
