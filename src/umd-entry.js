@@ -34,7 +34,7 @@ function createComponentInstance(Component) {
             if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`)
 
             // reactive props, so setProps() works
-            this._props = reactive({...(options.props ?? options)})
+            this._props = ref({...(options.props ?? options)})
 
             const on = options.on ?? {}
             const listeners = Object.fromEntries(
@@ -44,13 +44,16 @@ function createComponentInstance(Component) {
             const compRef = ref(null) // ← will hold App.vue’s exposed API
 
             const Root = {
-                setup: () => () =>
+                setup: () => {
+                    return () =>
                     h(Component, {
-                    ...toRefs(this._props), // 👈 giữ reactivity đúng cách
-                    ...listeners,
-                    ref: compRef,
-                    }),
+                        ...this._props,
+                        ...listeners,
+                        ref: compRef,
+                    });
+                },
             };
+
 
             this._compRef = compRef
             this.app = createApp(Root)
@@ -77,7 +80,7 @@ function createComponentInstance(Component) {
         }
 
         setProps(next) {
-            Object.assign(this._props, next)
+            this._props.value = { ...this._props.value, ...next };
         }
 
         on(eventName, handler) {
