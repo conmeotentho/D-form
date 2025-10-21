@@ -28,70 +28,68 @@ function toVueListenerKey(name) {
 }
 
 function createComponentInstance(Component) {
-    return class {
-        constructor(selector, options = {}) {
-            const el = typeof selector === 'string' ? document.querySelector(selector) : selector
-            if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`)
+  return class {
+    constructor(selector, options = {}) {
+      const el = typeof selector === "string" ? document.querySelector(selector) : selector;
+      if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`);
 
-            // reactive props, so setProps() works
-            this._props = ref({...(options.props ?? options)})
+      // 🧩 reactive props (not ref)
+      this._props = reactive({ ...(options.props ?? options) });
 
-            const on = options.on ?? {}
-            const listeners = Object.fromEntries(
-                Object.entries(on).map(([k, fn]) => [toVueListenerKey(k), fn])
-            )
+      const on = options.on ?? {};
+      const listeners = Object.fromEntries(
+        Object.entries(on).map(([k, fn]) => [toVueListenerKey(k), fn])
+      );
 
-            const compRef = ref(null) // ← will hold App.vue’s exposed API
+      const compRef = ref(null);
 
-            const Root = {
-                setup: () => {
-                    return () =>
-                    h(Component, {
-                        ...this._props,
-                        ...listeners,
-                        ref: compRef,
-                    });
-                },
-            };
+      const Root = {
+        setup: () => () =>
+          h(Component, {
+            ...toRefs(this._props), // ✅ giữ reactivity
+            ...listeners,
+            ref: compRef,
+          }),
+      };
 
-
-            this._compRef = compRef
-            this.app = createApp(Root)
-            this.app.use(PrimeVue, {theme: {preset: Aura, options: {prefix: 'p', darkModeSelector: '.app-dark'}}})
-            this.app.use(ConfirmationService)
-            this.app.use(i18n)
-            this.app.use(ToastService);
-            this.vm = this.app.mount(el)
-        }
-
-
-        call(method, ...args) {
-            const exp = this._compRef.value
-            if (!exp || typeof exp[method] !== 'function') {
-                throw new Error(`Exposed method "${method}" not found on App.vue`)
-            }
-            console.log("exp[method]", exp)
-            return exp[method](...args)
-        }
-
-        /** Optional shortcut to the exposed object */
-        get exposed() {
-            return this._compRef.value
-        }
-
-        setProps(next) {
-            this._props.value = { ...this._props.value, ...next };
-        }
-
-        on(eventName, handler) {
-            this._props[toVueListenerKey(eventName)] = handler
-        }
-
-        unmount() {
-            this.app.unmount()
-        }
+      this._compRef = compRef;
+      this.app = createApp(Root);
+      this.app.use(PrimeVue, {
+        theme: { preset: Aura, options: { prefix: "p", darkModeSelector: ".app-dark" } },
+      });
+      this.app.use(ConfirmationService);
+      this.app.use(i18n);
+      this.app.use(ToastService);
+      this.vm = this.app.mount(el);
     }
+
+    call(method, ...args) {
+      const exp = this._compRef.value;
+      if (!exp || typeof exp[method] !== "function") {
+        throw new Error(`Exposed method "${method}" not found on component`);
+      }
+      return exp[method](...args);
+    }
+
+    get exposed() {
+      return this._compRef.value;
+    }
+
+    // ✅ merge reactive props để Vue detect thay đổi
+    setProps(next) {
+      Object.assign(this._props, next);
+    }
+
+    on(eventName, handler) {
+      this._props[toVueListenerKey(eventName)] = handler;
+    }
+
+    unmount() {
+      this.app.unmount();
+    }
+  };
 }
+
 
 
 window.TreeComponent = createComponentInstance(TreeComponent);
