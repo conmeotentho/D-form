@@ -1,5 +1,5 @@
 // src/umd-entry.js
-import { createApp, h, reactive, ref, toRefs } from "vue";
+import { createApp, h, shallowReactive, toRefs, ref } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import i18n from "./i18n";
@@ -33,8 +33,8 @@ function createComponentInstance(Component) {
       const el = typeof selector === "string" ? document.querySelector(selector) : selector;
       if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`);
 
-      // 🧩 reactive props (not ref)
-      this._props = reactive({ ...(options.props ?? options) });
+      // ✅ shallowReactive để Vue detect thay đổi props cấp 1
+      this._props = shallowReactive({ ...(options.props ?? options) });
 
       const on = options.on ?? {};
       const listeners = Object.fromEntries(
@@ -44,12 +44,16 @@ function createComponentInstance(Component) {
       const compRef = ref(null);
 
       const Root = {
-        setup: () => () =>
-          h(Component, {
-            ...toRefs(this._props), // ✅ giữ reactivity
-            ...listeners,
-            ref: compRef,
-          }),
+        setup: () => {
+          // ✅ toRefs ở đây ổn vì Vue sẽ unwrap đúng kiểu reactive props
+          const reactiveProps = toRefs(this._props);
+          return () =>
+            h(Component, {
+              ...reactiveProps,
+              ...listeners,
+              ref: compRef,
+            });
+        },
       };
 
       this._compRef = compRef;
@@ -63,6 +67,11 @@ function createComponentInstance(Component) {
       this.vm = this.app.mount(el);
     }
 
+    setProps(next) {
+      // ✅ merge để Vue detect thay đổi key
+      Object.assign(this._props, next);
+    }
+
     call(method, ...args) {
       const exp = this._compRef.value;
       if (!exp || typeof exp[method] !== "function") {
@@ -73,11 +82,6 @@ function createComponentInstance(Component) {
 
     get exposed() {
       return this._compRef.value;
-    }
-
-    // ✅ merge reactive props để Vue detect thay đổi
-    setProps(next) {
-      Object.assign(this._props, next);
     }
 
     on(eventName, handler) {
