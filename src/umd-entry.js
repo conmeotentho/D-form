@@ -1,5 +1,5 @@
 // src/umd-entry.js
-import { createApp, h, shallowReactive, ref } from "vue";
+import { createApp, h, ref, reactive } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import i18n from "./i18n";
@@ -28,69 +28,60 @@ function toVueListenerKey(name) {
 }
 
 function createComponentInstance(Component) {
-  return class {
-    constructor(selector, options = {}) {
-      const el = typeof selector === "string" ? document.querySelector(selector) : selector;
-      if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`);
+    return class {
+        constructor(selector, options = {}) {
+            const el = typeof selector === 'string' ? document.querySelector(selector) : selector
+            if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`)
 
-      // ✅ shallowReactive giữ reactivity nhưng không wrap sâu
-      this._props = shallowReactive({ ...(options.props ?? options) });
+            // reactive props, so setProps() works
+            this._props = reactive({...(options.props ?? options)})
 
-      const on = options.on ?? {};
-      const listeners = Object.fromEntries(
-        Object.entries(on).map(([k, fn]) => [toVueListenerKey(k), fn])
-      );
+            const on = options.on ?? {}
+            const listeners = Object.fromEntries(
+                Object.entries(on).map(([k, fn]) => [toVueListenerKey(k), fn])
+            )
 
-      const compRef = ref(null);
+            const compRef = ref(null) // ← will hold App.vue’s exposed API
 
-      const Root = {
-        setup: () => {
-          // ❌ Không dùng toRefs ở đây — Vue sẽ tự unwrap reactivity
-          return () =>
-            h(Component, {
-              ...this._props,
-              ...listeners,
-              ref: compRef,
-            });
-        },
-      };
+            const Root = {
+                render: () => h(Component, {...this._props, ...listeners, ref: compRef}),
+            }
+            this._compRef = compRef
+            this.app = createApp(Root)
+            this.app.use(PrimeVue, {theme: {preset: Aura, options: {prefix: 'p', darkModeSelector: '.app-dark'}}})
+            this.app.use(ConfirmationService)
+            this.app.use(i18n)
+            this.app.use(ToastService);
+            this.vm = this.app.mount(el)
+        }
 
-      this._compRef = compRef;
-      this.app = createApp(Root);
-      this.app.use(PrimeVue, {
-        theme: { preset: Aura, options: { prefix: "p", darkModeSelector: ".app-dark" } },
-      });
-      this.app.use(ConfirmationService);
-      this.app.use(i18n);
-      this.app.use(ToastService);
-      this.vm = this.app.mount(el);
+
+        call(method, ...args) {
+            const exp = this._compRef.value
+            if (!exp || typeof exp[method] !== 'function') {
+                throw new Error(`Exposed method "${method}" not found on App.vue`)
+            }
+            console.log("exp[method]", exp)
+            return exp[method](...args)
+        }
+
+        /** Optional shortcut to the exposed object */
+        get exposed() {
+            return this._compRef.value
+        }
+
+        setProps(next) {
+            Object.assign(this._props, next)
+        }
+
+        on(eventName, handler) {
+            this._props[toVueListenerKey(eventName)] = handler
+        }
+
+        unmount() {
+            this.app.unmount()
+        }
     }
-
-    // ✅ Reactive merge
-    setProps(next) {
-      Object.assign(this._props, next);
-    }
-
-    call(method, ...args) {
-      const exp = this._compRef.value;
-      if (!exp || typeof exp[method] !== "function") {
-        throw new Error(`Exposed method "${method}" not found on component`);
-      }
-      return exp[method](...args);
-    }
-
-    get exposed() {
-      return this._compRef.value;
-    }
-
-    on(eventName, handler) {
-      this._props[toVueListenerKey(eventName)] = handler;
-    }
-
-    unmount() {
-      this.app.unmount();
-    }
-  };
 }
 
 

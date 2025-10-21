@@ -79,7 +79,7 @@ watch(() => props.dataSearch, (newVal) => {
     console.log("run dataSearch", newVal);
     mappingDataInit(newVal)
   }
-})
+}, { deep: true })
 watch(() => props.token, (newValue) => {
   initToken(newValue)
 });
