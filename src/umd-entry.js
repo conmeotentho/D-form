@@ -1,5 +1,5 @@
 // src/umd-entry.js
-import { createApp, h, reactive, ref } from "vue";
+import { createApp, h, reactive, ref, toRefs } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import i18n from "./i18n";
