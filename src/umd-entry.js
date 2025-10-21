@@ -1,5 +1,5 @@
 // src/umd-entry.js
-import { createApp, h, shallowReactive, toRefs, ref } from "vue";
+import { createApp, h, shallowReactive, ref } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import i18n from "./i18n";
@@ -33,7 +33,7 @@ function createComponentInstance(Component) {
       const el = typeof selector === "string" ? document.querySelector(selector) : selector;
       if (!el) throw new Error(`Không tìm thấy phần tử: ${selector}`);
 
-      // ✅ shallowReactive để Vue detect thay đổi props cấp 1
+      // ✅ shallowReactive giữ reactivity nhưng không wrap sâu
       this._props = shallowReactive({ ...(options.props ?? options) });
 
       const on = options.on ?? {};
@@ -45,11 +45,10 @@ function createComponentInstance(Component) {
 
       const Root = {
         setup: () => {
-          // ✅ toRefs ở đây ổn vì Vue sẽ unwrap đúng kiểu reactive props
-          const reactiveProps = toRefs(this._props);
+          // ❌ Không dùng toRefs ở đây — Vue sẽ tự unwrap reactivity
           return () =>
             h(Component, {
-              ...reactiveProps,
+              ...this._props,
               ...listeners,
               ref: compRef,
             });
@@ -67,8 +66,8 @@ function createComponentInstance(Component) {
       this.vm = this.app.mount(el);
     }
 
+    // ✅ Reactive merge
     setProps(next) {
-      // ✅ merge để Vue detect thay đổi key
       Object.assign(this._props, next);
     }
 
