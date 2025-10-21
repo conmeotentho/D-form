@@ -76,7 +76,7 @@ watch(() => props.currentDetailItem, (newValue) => {
 })
 watch(() => props.dataSearch, (newVal) => {
   if (newVal) {
-    console.log("run dataSearch");
+    console.log("run dataSearch", newVal);
     mappingDataInit(newVal)
   }
 })
@@ -85,7 +85,7 @@ watch(() => props.token, (newValue) => {
 });
 
 onMounted(async () => {
-  mappingDataInit(props.dataSearch as any)
+  mappingDataInit(props.dataSearch)
   console.log("props.currentDetailItem", props.currentDetailItem)
   dataSelected.value = await mappingDataDetail(props.currentDetailItem);
   initToken(props?.token);

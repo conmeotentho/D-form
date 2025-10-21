@@ -44,8 +44,14 @@ function createComponentInstance(Component) {
             const compRef = ref(null) // ← will hold App.vue’s exposed API
 
             const Root = {
-                render: () => h(Component, {...this._props, ...listeners, ref: compRef}),
-            }
+                setup: () => () =>
+                    h(Component, {
+                    ...toRefs(this._props), // 👈 giữ reactivity đúng cách
+                    ...listeners,
+                    ref: compRef,
+                    }),
+            };
+
             this._compRef = compRef
             this.app = createApp(Root)
             this.app.use(PrimeVue, {theme: {preset: Aura, options: {prefix: 'p', darkModeSelector: '.app-dark'}}})
