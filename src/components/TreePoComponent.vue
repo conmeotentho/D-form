@@ -74,11 +74,8 @@ watch(() => props.currentDetailItem, (newValue) => {
   console.log("mappingDataDetail", newValue);
   mappingDataDetail(newValue)
 })
-watch(() => props.dataSearch, (newVal) => {
-  if (newVal) {
-    console.log("run dataSearch", newVal);
-    mappingDataInit(newVal)
-  }
+watch(() => props.dataSearch, () => {
+  mappingDataInit(props.dataSearch)
 }, { deep: true })
 watch(() => props.token, (newValue) => {
   initToken(newValue)

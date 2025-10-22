@@ -3,7 +3,7 @@
     <div class="flex h-[100vh]">
       <SearchMultiple
         :width="450"
-        :feature="typeTree"
+        :feature="'ProductSpecification'"
         :hasPermissionCreate="true"
         :listObjects="listObjects"
         @changeTab="changeTab"
