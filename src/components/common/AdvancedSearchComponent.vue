@@ -18,9 +18,9 @@
         </div>
         <div class="tree-conditions">
             <div class="tree-conditions-isroot">
-                {{$t('searchMulti.and')}} <span class="fa fa-caret-down"></span>
+                {{$t('searchMulti.and')}} <span class="pi pi-caret-down"></span>
                 <button class="btn btn-add" @click="addNewTreeNode">
-                    <span class="fa fa-plus"></span> {{$t('searchMulti.add-action')}}</button>
+                    <span class="pi pi-plus"></span> {{$t('searchMulti.add-action')}}</button>
             </div>
             <div class="tree-list">
                 <div class="tree-conditions-node" v-for="(node, index) in treeNodes" :key="node.id">
@@ -54,7 +54,7 @@
                         <Dropdown class="custom-dropdown" :options="nodeActions" optionLabel="label"
                         @change="onChangeOption(index)" v-model="selectedAction">
                             <template #dropdownicon>
-                                <i class="fa fa-ellipsis-v"></i>
+                                <i class="pi pi-ellipsis-v"></i>
                             </template>
                             <template #option="slotProps">
                                 <div class="flex items-center">

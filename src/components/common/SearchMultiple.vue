@@ -254,6 +254,7 @@ const generateSearchQuery = (keyword: string) => {
 };
 
 const toggleFilter = () => {
+  isFilter.value = !isFilter.value;
   queryAdvanced.value = '';
   querySorted.value = '';
 };
