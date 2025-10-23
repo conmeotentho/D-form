@@ -185,7 +185,8 @@ const onDrop = (evt: DragEvent) => {
     getCategoryDetail(itemDrop.id)
   }
   if (props.typeTree === TypeEnum.PRODUCT_SPEC) {
-    getProductSpecDetail(itemDrop.id);
+    // getProductSpecDetail(itemDrop.id);
+    emit('getDetailEvent', itemDrop.id);
   }
   if (props.typeTree === TypeEnum.CFS_SPEC) {
     getServiceSpecDetail(itemDrop.id)
