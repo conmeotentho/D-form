@@ -13,7 +13,7 @@
         <div style="display: flex; height: max-content">
           <DropComponent :isSearchTab="isSearchTab" @dropItem="onDrop" />
         </div>
-        <TreeComponent v-if="dataSelected" :parentObject="dataSelected" :hasPermissionEdit="true" />
+        <TreeComponent v-if="dataSelected" :parentObject="dataSelected" :hasPermissionEdit="true" :hasPermissionDelete="true" />
       </div>
     </div>
 </template>
