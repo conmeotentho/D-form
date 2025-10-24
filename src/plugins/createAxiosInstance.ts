@@ -6,10 +6,6 @@ export function createAxiosInstance(BASEURL: string) {
   const axiosInstance = axios.create({
     baseURL: BASEURL,
     timeout: 30000,
-    responseType: 'json', // ✅ Ép axios luôn parse JSON
-    headers: {
-      Accept: 'application/json',
-    },
   });
 
   const handleResponse = async (response: any) => {
@@ -18,26 +14,14 @@ export function createAxiosInstance(BASEURL: string) {
 
   // Request interceptor for API calls
   axiosInstance.interceptors.request.use((config: any) => {
-    const lowcoderStorage = localStorage.getItem('lowcoder_app_local_storage');
-    let access_token = null;
-    let refresh_token = null;
+    const accessToken = localStorage.getItem('access_token') || localStorage.getItem('lowcoder_app_local_storage')['access_token'];
+    const refreshToken = localStorage.getItem('refresh_token') || localStorage.getItem('lowcoder_app_local_storage')['refresh_token'];
 
-    if (lowcoderStorage) {
-      try {
-        const parsed = JSON.parse(lowcoderStorage);
-        access_token = parsed?.access_token || null;
-        refresh_token = parsed?.refresh_token || null;
-      } catch (e) {
-        console.warn('Không parse được lowcoder_app_local_storage:', e);
-      }
-    }
-    access_token = access_token || localStorage.getItem('access_token');
-    refresh_token = refresh_token  || localStorage.getItem('refresh_token');
-    if (access_token) {
+    if (accessToken) {
       config.headers = {
         ...config.headers,
-        Authorization: `Bearer ${access_token}`,
-        refresh_token: `${refresh_token}`
+        Authorization: `Bearer ${accessToken}`,
+        RefreshToken: `${refreshToken}`
       };
     }
     config.method = config.method.toUpperCase();
