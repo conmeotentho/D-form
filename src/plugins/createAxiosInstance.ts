@@ -3,7 +3,7 @@ import { refreshTokenAPI } from '@/service/AuthService';
 import { setSession } from '@/utils/jwt';
 
 export function createAxiosInstance() {
-  const BASEURL = 'https://api-dev-oda.vnpt.vn';
+  const BASEURL = 'http://10.165.68.7:30216';
   const axiosInstance = axios.create({
     baseURL: BASEURL,
     timeout: 30000,
