@@ -3,7 +3,14 @@ import { refreshTokenAPI } from '@/service/AuthService';
 import { setSession } from '@/utils/jwt';
 
 export function createAxiosInstance(BASEURL: string) {
-  const axiosInstance = axios.create({ baseURL: BASEURL, timeout: 30000 });
+  const axiosInstance = axios.create({
+    baseURL: BASEURL,
+    timeout: 30000,
+    responseType: 'json', // ✅ Ép axios luôn parse JSON
+    headers: {
+      Accept: 'application/json',
+    },
+  });
 
   const handleResponse = async (response: any) => {
     return response;
