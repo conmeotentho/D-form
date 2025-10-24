@@ -2,7 +2,8 @@ import axios from 'axios';
 import { refreshTokenAPI } from '@/service/AuthService';
 import { setSession } from '@/utils/jwt';
 
-export function createAxiosInstance(BASEURL: string) {
+export function createAxiosInstance() {
+  const BASEURL = 'https://api-dev-oda.vnpt.vn';
   const axiosInstance = axios.create({
     baseURL: BASEURL,
     timeout: 30000,
