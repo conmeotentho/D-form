@@ -13,7 +13,13 @@
         <div style="display: flex; height: max-content">
           <DropComponent :isSearchTab="isSearchTab" @dropItem="onDrop" />
         </div>
-        <TreeComponent v-if="dataSelected" :parentObject="dataSelected" :hasPermissionEdit="true" :hasPermissionDelete="true" />
+        <TreeComponent 
+          v-if="dataSelected" 
+          :parentObject="dataSelected" 
+          :hasPermissionEdit="true" 
+          :hasPermissionDelete="true" 
+          @deleteNode="deletePSNode"
+        />
       </div>
     </div>
 </template>
@@ -193,6 +199,10 @@ const onDrop = (evt: DragEvent) => {
   if (props.typeTree === TypeEnum.RESOURCE_SPEC) {
     getResourceSpecDetail(itemDrop.id)
   }
+};
+
+const deletePSNode = () => {
+  emit('deleteRecord', dataSelected.value)
 };
 
 const getSimplePODetail = async (id: string) => {
