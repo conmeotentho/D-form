@@ -71,7 +71,6 @@ const listObjects = ref<PanelObject[]>([]);
 const dataSelected = ref<any>(null);
 
 watch(() => props.currentDetailItem, (newValue) => {
-  console.log("mappingDataDetail", newValue);
   mappingDataDetail(newValue)
 })
 watch(() => props.dataSearch, () => {
@@ -83,16 +82,13 @@ watch(() => props.token, (newValue) => {
 
 onMounted(async () => {
   mappingDataInit(props.dataSearch)
-  console.log("props.currentDetailItem", props.currentDetailItem)
   dataSelected.value = await mappingDataDetail(props.currentDetailItem);
   initToken(props?.token);
 })
 const initToken = (token?: string) => {
-  console.log('tokenChange:', token);
   props?.token?.length ? setCustomTokenFromStore(token ?? "") : clearTokenFromStore();
 }
 const mappingDataDetail = async (dataDetail: any) => {
-  console.log('test', dataDetail, props.typeTree)
   const MappingFunctionDetail: {
     [K in TypeEnum]: any
   } = {

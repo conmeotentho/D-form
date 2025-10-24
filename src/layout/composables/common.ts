@@ -90,6 +90,7 @@ export const getFullDetailCharacteristicSpec = async (characteristics: any, isCh
   const ids = characteristics.map((item: any) => item.id);
   try {
     const response = await getFullCharacteristicByIdIn(ids);
+    console.log('response', response);
     if (response.status !== StatusCodeEnum.SUCCESS) {
       response.data = [];
     }
