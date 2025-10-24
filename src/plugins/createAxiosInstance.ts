@@ -15,14 +15,28 @@ export function createAxiosInstance() {
 
   // Request interceptor for API calls
   axiosInstance.interceptors.request.use((config: any) => {
-    const accessToken = localStorage.getItem('access_token') || localStorage.getItem('lowcoder_app_local_storage')['access_token'];
-    const refreshToken = localStorage.getItem('refresh_token') || localStorage.getItem('lowcoder_app_local_storage')['refresh_token'];
+    const lowcoderStorage = localStorage.getItem('lowcoder_app_local_storage');
+    let access_token = null;
+    let refresh_token = null;
 
-    if (accessToken) {
+    if (lowcoderStorage) {
+      try {
+        const parsed = JSON.parse(lowcoderStorage);
+        access_token = parsed?.access_token || null;
+        refresh_token = parsed?.refresh_token || null;
+      } catch (e) {
+        console.warn('Không parse được lowcoder_app_local_storage:', e);
+      }
+    }
+    access_token = access_token || localStorage.getItem('access_token');
+    refresh_token = refresh_token  || localStorage.getItem('refresh_token');
+
+
+    if (access_token) {
       config.headers = {
         ...config.headers,
-        Authorization: `Bearer ${accessToken}`,
-        RefreshToken: `${refreshToken}`
+        Authorization: `Bearer ${access_token}`,
+        RefreshToken: `${access_token}`
       };
     }
     config.method = config.method.toUpperCase();
